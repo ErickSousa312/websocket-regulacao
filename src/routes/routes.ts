@@ -1,38 +1,12 @@
 import express from 'express';
 const router = express.Router();
 
-import WordController from '../controllers/WordController.ts';
 import CategoryController from '../controllers/CategoryController.ts';
-import SuggestionController from '../controllers/SuggestionController.ts';
 import AuthController from '../controllers/AuthController';
 import PermissionController from '../controllers/PermissionController';
 import RoleController from '../controllers/RoleController';
 import JwtMiddleware from '../auth/JwtMiddleware.ts';
-
-// Rotas para palavras (words)
-router.post('/word', WordController.create);
-router.get('/word', WordController.getAll);
-router.get('/word/category/:category', WordController.findByCategory);
-router.get('/word/:name', WordController.findOne);
-router.get('/word_id/:id', WordController.findOneId);
-router.put('/word_id/:id/signal', WordController.updateOneaddWordDefinition);
-router.put('/word/:id', WordController.updateOne);
-router.delete('/word/:id', WordController.deleteOne);
-
-// Adicionando a rota de busca para `word`
-router.get('/word/search/:query', WordController.search);
-
-// Rotas para sugestões (suggestions)
-router.post('/suggestion', SuggestionController.create);
-router.get('/suggestion', SuggestionController.getAll);
-router.get('/suggestion/:name', SuggestionController.findOne);
-router.get('/suggestion_id/:id', SuggestionController.findOneId);
-router.put('/suggestion/:id', SuggestionController.updateOne);
-router.put(
-  '/suggestion_id/:id/signal',
-  SuggestionController.updateOneaddWordDefinition,
-);
-router.delete('/suggestion/:id', SuggestionController.deleteOne);
+import CourseInfoController from '../controllers/CourseInfoController.ts';
 
 // Rotas para categorias (categories)
 router.get('/category', CategoryController.getAll);
@@ -42,14 +16,22 @@ router.get('/category/:id', CategoryController.findOne);
 router.delete('/category/:id', CategoryController.deleteOne);
 router.get('/category_showInMenu', CategoryController.findByShowInMenu);
 
+// Rotas para informações de cursos (courses)
+router.get('/courses', CourseInfoController.getAll);
+router.post('/courses', CourseInfoController.create);
+router.put('/courses/:id', CourseInfoController.updateOne);
+router.get('/courses/:id', CourseInfoController.findOne);
+router.delete('/courses/:id', CourseInfoController.deleteOne);
+
 // Rotas de autenticação
 router.post('/signUp', AuthController.signUp);
 router.post('/login', AuthController.signIn);
-router.post('/payloadToken', JwtMiddleware, AuthController.dataToken);
+// router.post('/payloadToken', JwtMiddleware, AuthController.dataToken);
 
 // Rotas para papéis e permissões
 router.post('/role', RoleController.create);
 router.post('/permission', PermissionController.create);
+router.get('/infoUser', JwtMiddleware, AuthController.dataToken);
 
 // Rota de teste
 router.get('/', (req, res) => {

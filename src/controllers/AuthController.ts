@@ -4,46 +4,41 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { TypeUserData, TypeUserDataDB } from '../@types/userData';
 import Role from '../models/Role';
-import getRoleById from '../utils/GetRoleByID';
+// import getRoleById from '../utils/GetRoleByID';
 
 class AuthController {
   async signUp(req: Request, res: Response) {
     const { userName, password, role } = req.body;
+    console.log(userName, password, role);
+
     try {
-      await Usuario.findOne({ userName: userName }).then((response) => {
-        if (response) {
-          return res.status(409).json({ error: 'O usuário já existe' });
-        } else {
-          bcrypt.hash(
-            password,
-            10,
-            async (err: Error | undefined, hash: string) => {
-              const usuario = {
-                userName,
-                password: hash,
-                role,
-              };
-              await Usuario.create(usuario).then((response) => {
-                if (!response) {
-                  return res
-                    .status(400)
-                    .json({ msg: 'Erro ao registrar  Usuario' });
-                } else {
-                  res
-                    .status(201)
-                    .json({ msg: 'Usuário registrado com sucesso' });
-                }
-              });
-            },
-          );
-        }
+      const existingUser = await Usuario.findOne({ userName });
+
+      if (existingUser) {
+        return res.status(409).json({ error: 'O usuário já existe' });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      console.log(hashedPassword);
+      const newUser = await Usuario.create({
+        userName,
+        password: hashedPassword,
+        role,
       });
+
+      if (!newUser) {
+        return res.status(400).json({ msg: 'Erro ao registrar Usuario' });
+      }
+
+      res.status(201).json({ msg: 'Usuário registrado com sucesso' });
     } catch (error) {
-      return res
-        .status(400)
-        .json({ msg: 'Erro ao cadastrar Usuario', err: error });
+      res.status(400).json({
+        msg: 'Erro ao cadastrar Usuario',
+        err: (error as Error).message,
+      });
     }
   }
+
   async signIn(req: Request & { userData?: TypeUserData }, res: Response) {
     const { userName, password } = req.body;
     console.log(req.body);
@@ -78,8 +73,8 @@ class AuthController {
       );
 
       return res.status(201).json({
-        user: response.userName,
-        token: token,
+        userName: response.userName,
+        access_token: token,
       });
     } catch (error) {
       res.status(500).json({ msg: 'Erro interno do servidor', err: error });
@@ -90,11 +85,11 @@ class AuthController {
     if (!req.userData?.role) {
       return res.status(422).json({ msg: 'Role is undefined' });
     }
-    const data = await getRoleById(req.userData?.role);
-    if (!data) {
-      return res.status(404).json({ msg: 'Role not found' });
-    }
-    return res.status(200).json({ dataToken: req.userData, role: data });
+    return res.status(200).json({
+      _id: req.userData._id,
+      userName: req.userData.userName,
+      role: req.userData.role,
+    });
   }
 }
 
