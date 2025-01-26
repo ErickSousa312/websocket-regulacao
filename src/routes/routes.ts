@@ -7,6 +7,8 @@ import PermissionController from '../controllers/PermissionController';
 import RoleController from '../controllers/RoleController';
 import JwtMiddleware from '../auth/JwtMiddleware.ts';
 import CourseInfoController from '../controllers/CourseInfoController.ts';
+import { broadcast } from '../websocket/event/broadcast.ts';
+import { getWebSocketServer } from '../websocket/index.ts';
 
 // Rotas para categorias (categories)
 router.get('/category', CategoryController.getAll);
@@ -36,6 +38,8 @@ router.get('/infoUser', JwtMiddleware, AuthController.dataToken);
 // Rota de teste
 router.get('/', (req, res) => {
   res.json({ msg: 'ta rodando pai' });
+  const wss = getWebSocketServer();
+  broadcast(wss, 'teste de api');
   console.log('hi');
 });
 

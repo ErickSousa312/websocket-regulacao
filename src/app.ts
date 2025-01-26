@@ -14,5 +14,6 @@ app.use(routes);
 
 const server = http.createServer(app);
 initializeWebSocket(server);
+server.listen(process.env.WEBSOCKET_PORT);
 
 export default app;

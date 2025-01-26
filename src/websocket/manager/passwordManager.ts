@@ -1,35 +1,80 @@
-import { Password } from '../../@types/password';
+import { Password, PasswordGenerate } from '../../@types/password';
+import { getPassword } from '../utils/generatePasswords';
 
 class PasswordManager {
   private passwords: Password[] = [];
+  private passwordsGenerate: PasswordGenerate[] = [];
   private lastPasswordId: number = 0;
 
-  public generatePassword(guiche: string): Password {
+  public generatePasswordSolo(): PasswordGenerate {
+    const getPasswordSolo = getPassword();
+    const newPassword: PasswordGenerate = {
+      id: `${getPasswordSolo}`,
+      called: false,
+    };
+    this.passwordsGenerate.push(newPassword);
+    return newPassword;
+  }
+  public generatePasswordGuiche(guiche: string): Password {
     this.lastPasswordId += 1;
     const newPassword: Password = {
       id: `${this.lastPasswordId}`,
       guiche,
       called: false,
     };
-    this.passwords.push(newPassword);
+    this.passwords.unshift(newPassword);
     return newPassword;
   }
 
-  public callNextPassword(): Password | null {
-    const nextPassword = this.passwords.find((password) => !password.called);
-    if (nextPassword) {
-      nextPassword.called = true;
-      return nextPassword;
+  public callNextPassword(guiche: string): Password | null {
+    const nextPassword = this.passwordsGenerate.find(
+      (password) => !password.called,
+    );
+    this.passwordsGenerate = this.passwordsGenerate.map((password) => {
+      if (password.id === nextPassword?.id) {
+        return {
+          ...password,
+          called: true,
+        };
+      }
+      return password;
+    });
+    console.log(this.passwordsGenerate);
+    if (!nextPassword) {
+      return null;
     }
-    return null;
+    const passwordWithGuiche = {
+      id: nextPassword?.id,
+      guiche,
+      called: true,
+    };
+    this.passwords.push(passwordWithGuiche);
+    return passwordWithGuiche;
   }
 
   public getAllPasswords(): Password[] {
-    return this.passwords;
+    return this.passwords.slice().reverse();
+  }
+  public getAllPasswordsGenerated(): PasswordGenerate[] {
+    return this.passwordsGenerate;
+  }
+  public excludeAllPasswords() {
+    this.passwordsGenerate = [];
+  }
+  public excludeAllData() {
+    this.passwordsGenerate = [];
+    this.passwords = [];
   }
 
   public getCalledPasswords(): Password[] {
     return this.passwords.filter((password) => password.called);
+  }
+
+  public getLastCalledPassword(): Password | undefined {
+    return this.passwords
+      .slice()
+      .reverse()
+      .find((password) => password.called);
   }
 }
 
