@@ -1,14 +1,14 @@
 import express from 'express';
 const router = express.Router();
 
-import CategoryController from '../controllers/CategoryController.ts';
+import CategoryController from '../controllers/CategoryController';
 import AuthController from '../controllers/AuthController';
 import PermissionController from '../controllers/PermissionController';
 import RoleController from '../controllers/RoleController';
-import JwtMiddleware from '../auth/JwtMiddleware.ts';
-import CourseInfoController from '../controllers/CourseInfoController.ts';
-import { broadcast } from '../websocket/event/broadcast.ts';
-import { getWebSocketServer } from '../websocket/index.ts';
+import JwtMiddleware from '../auth/JwtMiddleware';
+import CourseInfoController from '../controllers/CourseInfoController';
+import { broadcast } from '../websocket/event/broadcast';
+import { getWebSocketServer } from '../websocket/index';
 
 // Rotas para categorias (categories)
 router.get('/category', CategoryController.getAll);

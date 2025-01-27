@@ -8,8 +8,8 @@
     "strict": true,                      // Ativa todas as opções rigorosas de verificação de tipos
     "esModuleInterop": true,             // Permite importar módulos CommonJS usando a sintaxe de módulo ES
     "sourceMap": true,
-    "allowImportingTsExtensions":true,
-    "noEmit": true,
+    "allowImportingTsExtensions": false,
+    "noEmit": false,
     "resolveJsonModule": true  
                 // Gera arquivos de mapeamento de origem para depuração
   },

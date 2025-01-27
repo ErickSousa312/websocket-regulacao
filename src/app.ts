@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-import routes from './routes/routes.ts';
+import routes from './routes/routes';
 const bodyParser = 'bodyParser';
 import http from 'http';
-import { initializeWebSocket } from './websocket/index.ts';
+import { initializeWebSocket } from './websocket/index';
 
 const app = express();
 
