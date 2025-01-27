@@ -1,23 +1,11 @@
-export function getPassword() {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const numbers = '0123456789';
+let normalCounter = 1; // Contador para senhas normais
+let priorityCounter = 1; // Contador para senhas prioritárias
 
-  const passwordArray = Array(4).fill(null);
-  const numberPositions = new Set();
-
-  while (numberPositions.size < 3) {
-    numberPositions.add(Math.floor(Math.random() * 4));
+export function getPassword(priority?: boolean): string {
+  if (priority) {
+    return `P${priorityCounter++}`;
+  } else {
+    // Gera senha normal com "A" seguido pelo contador de senhas normais
+    return `A${normalCounter++}`;
   }
-
-  numberPositions.forEach((pos: any) => {
-    passwordArray[pos] = numbers[Math.floor(Math.random() * numbers.length)];
-  });
-
-  passwordArray.forEach((val, index) => {
-    if (val === null) {
-      passwordArray[index] = chars[Math.floor(Math.random() * chars.length)];
-    }
-  });
-
-  return passwordArray.join('');
 }

@@ -12,12 +12,12 @@ function JwtMiddleware(req, res, next) {
         return res.status(401).send({ error: 'Token não informado' });
     }
     const [typeToken, token] = headerToken.split(' ');
-    if (process.env.Secret === undefined) {
+    if (process.env.SECRET === undefined) {
         return res
             .status(500)
             .json({ msg: 'Variável de ambiente Secret não definida' });
     }
-    jsonwebtoken_1.default.verify(token, process.env.Secret, (err, decoded) => {
+    jsonwebtoken_1.default.verify(token, process.env.SECRET, (err, decoded) => {
         if (err) {
             return res.status(401).json({ msg: 'Token Inválido', error: err });
         }

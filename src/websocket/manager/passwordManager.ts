@@ -6,8 +6,14 @@ class PasswordManager {
   private passwordsGenerate: PasswordGenerate[] = [];
   private lastPasswordId: number = 0;
 
-  public generatePasswordSolo(): PasswordGenerate {
-    const getPasswordSolo = getPassword();
+  public generatePasswordSolo(priority?: boolean): PasswordGenerate {
+    let getPasswordSolo;
+    if (priority) {
+      getPasswordSolo = getPassword(priority);
+    } else {
+      getPasswordSolo = getPassword();
+    }
+
     const newPassword: PasswordGenerate = {
       id: `${getPasswordSolo}`,
       called: false,
@@ -26,10 +32,21 @@ class PasswordManager {
     return newPassword;
   }
 
-  public callNextPassword(guiche: string): Password | null {
-    const nextPassword = this.passwordsGenerate.find(
-      (password) => !password.called,
-    );
+  public callNextPassword(guiche: string, priority?: boolean): Password | null {
+    let nextPassword: PasswordGenerate | undefined = undefined;
+    if (priority) {
+      nextPassword = this.passwordsGenerate.find((password) => {
+        return !password.called && password.id.startsWith('P');
+      });
+      if (!nextPassword) {
+        return null;
+      }
+    } else {
+      nextPassword = this.passwordsGenerate.find((password) => {
+        return !password.called;
+      });
+    }
+
     this.passwordsGenerate = this.passwordsGenerate.map((password) => {
       if (password.id === nextPassword?.id) {
         return {

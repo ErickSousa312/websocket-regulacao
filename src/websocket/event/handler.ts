@@ -8,13 +8,23 @@ export const handleMessage: Record<
 > = {
   generatePassword: (payload, ws, wss) => {
     console.log('Gerando senha');
-    const newPassword = passwordManager.generatePasswordSolo();
+    let newPassword;
+    if (payload.priority) {
+      newPassword = passwordManager.generatePasswordSolo(true);
+      console.log(newPassword);
+    } else {
+      newPassword = passwordManager.generatePasswordSolo();
+    }
     console.log(newPassword);
     broadcastAttPasswords(wss);
   },
   callNextPassword: (payload, ws, wss) => {
     console.log('Chamando próxima senha');
-    passwordManager.callNextPassword(payload.guiche);
+    if (payload.priority) {
+      passwordManager.callNextPassword(payload.guiche, true);
+    } else {
+      passwordManager.callNextPassword(payload.guiche);
+    }
     broadcastAttPasswords(wss);
   },
   excludeAllPasswords: (payload, ws, wss) => {
