@@ -9,3 +9,8 @@ export function getPassword(priority?: boolean): string {
     return `A${normalCounter++}`;
   }
 }
+
+export const cleanCounters = () => {
+  normalCounter = 1;
+  priorityCounter = 1;
+};

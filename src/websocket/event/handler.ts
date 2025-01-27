@@ -1,6 +1,7 @@
 import { broadcast, broadcastAttPasswords } from './broadcast';
 import { WebSocket, WebSocketServer } from 'ws';
 import { passwordManager } from '../manager/passwordManager';
+import { getPassword, cleanCounters } from '../utils/generatePasswords';
 
 export const handleMessage: Record<
   string,
@@ -35,6 +36,7 @@ export const handleMessage: Record<
   excludeAllData: (payload, ws, wss) => {
     console.log('Chamando próxima senha');
     passwordManager.excludeAllData();
+    cleanCounters();
     broadcastAttPasswords(wss);
   },
   ping: (_, ws, wss) => {
