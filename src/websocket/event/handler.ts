@@ -21,6 +21,7 @@ export const handleMessage: Record<
   },
   callNextPassword: (payload, ws, wss) => {
     console.log('Chamando próxima senha');
+    console.log(payload)
     if (payload.priority) {
       passwordManager.callNextPassword(payload.guiche, true);
     } else {

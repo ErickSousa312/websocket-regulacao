@@ -10,7 +10,7 @@ node_modules
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
-
+dist 
 # AWS User-specific
 .idea/**/aws.xml
 

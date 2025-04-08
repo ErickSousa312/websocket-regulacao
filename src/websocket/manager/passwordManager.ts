@@ -43,7 +43,7 @@ class PasswordManager {
       }
     } else {
       nextPassword = this.passwordsGenerate.find((password) => {
-        return !password.called;
+        return !password.called && password.id.startsWith('A');
       });
     }
 
